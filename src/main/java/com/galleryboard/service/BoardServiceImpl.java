@@ -6,15 +6,24 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.galleryboard.domain.Attach;
 import com.galleryboard.domain.Board;
+import com.galleryboard.mapper.AttachMapper;
 import com.galleryboard.mapper.BoardMapper;
+import com.galleryboard.util.FileUtil;
 
 @Service
 public class BoardServiceImpl implements BoardService{
 
 	@Autowired
 	BoardMapper boardMapper;
+	@Autowired
+	FileUtil fileUtil;
+	@Autowired
+	AttachMapper attachMapper;
 	
 	@Override
 	public boolean registerBoard(Board board) {
@@ -24,10 +33,34 @@ public class BoardServiceImpl implements BoardService{
 			queryResult = boardMapper.insertBoard(board);
 		}else {
 			queryResult = boardMapper.updateBoard(board);
+			if(board.getChangeYn().equals("Y")) {
+				attachMapper.deleteAttach(board.getIdx());
+				if(CollectionUtils.isEmpty(board.getFileidxs()) == false) {
+					attachMapper.undeleteAttach(board.getFileidxs());
+				}
+			}
 		}
 		
 		return (queryResult==1)?true:false;
 		
+	}
+	
+	@Override
+	public boolean registerBoard(Board board, MultipartFile[] files) {
+		int queryResult = 0;
+		
+		if(registerBoard(board) == false) {
+			return false;
+		}
+		
+		List<Attach> list = fileUtil.uploadFiles(files, board.getIdx());
+		if(CollectionUtils.isEmpty(list) == false) {
+			queryResult= attachMapper.insertAttach(list);
+			if(queryResult<1) {
+				queryResult = 0;
+			}
+		}
+		return (queryResult>0);
 	}
 
 	@Override
@@ -58,6 +91,21 @@ public class BoardServiceImpl implements BoardService{
 			list = boardMapper.selectBoardList(board);
 		}
 		return list;
+	}
+
+	@Override
+	public List<Attach> getAttachFileList(Long boardIdx) {
+		List<Attach> list = Collections.emptyList();
+		int count = attachMapper.selectAttachTotalCount(boardIdx);
+		if(count>0) {
+			list = attachMapper.selectAttachList(boardIdx);
+		}
+		return list;
+	}
+
+	@Override
+	public Attach getAttachDetail(Long idx) {
+		return attachMapper.selectAttachDetail(idx);
 	}
 
 }

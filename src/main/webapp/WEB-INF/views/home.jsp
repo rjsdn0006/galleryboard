@@ -20,7 +20,7 @@
 			<h2>${principal}</h2>
 			<a href="/logout">로그아웃</a>
 			<a href="/user/info">마이페이지</a>
-			<a href="/board">게시판</a>
+			<a href="/board/list">게시판</a>
 		</sec:authorize>
 	</div>
 	

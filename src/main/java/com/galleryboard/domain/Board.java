@@ -1,6 +1,7 @@
 package com.galleryboard.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,4 +17,7 @@ public class Board extends Common{
 	private String content;
 	private String writer;
 	private int viewCnt;
+	
+	private String changeYn;
+	private List<Long> fileidxs;
 }

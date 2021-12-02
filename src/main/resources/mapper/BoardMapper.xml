@@ -61,10 +61,10 @@
 					insert_time DESC
 	</select>
 	
-	<select id="selectBoardTotalCount" parameterType="Board">
-		SELECT 	count(*)
+	<select id="selectBoardTotalCount" parameterType="Board" resultType="int">
+		SELECT 	IFNULL(count(*),0)
 		FROM 	tb_board
-		WHERE 	delete_tn = 'N'
+		WHERE 	delete_yn = 'N'
 	</select>
 	
 </mapper>
