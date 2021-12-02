@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	public void configure(HttpSecurity http) throws Exception{
 		http
 	      .authorizeRequests() // 승인요청 
+	      		.antMatchers("/board/**").authenticated()
 	            .antMatchers("/user/**").authenticated() 
                                        // 해당 url의 요청은 인증되야한다.
 	            .antMatchers("/admin/**").access("hasRole('ROLE_ADMIN')")

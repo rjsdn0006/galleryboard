@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userMapper.selectUser(username); // 여기에 계속 null이 들어옴
+		User user = userMapper.selectUser(username); 
 		user.setAuthorities(getAuthorities(username));
 		return user;
 	}

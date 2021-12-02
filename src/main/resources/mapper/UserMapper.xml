@@ -3,7 +3,7 @@
 <mapper namespace="com.galleryboard.mapper.UserMapper">
 	
 	<sql id="UserColumns">
-		id,
+		id as username,
 		password,
 		name,
 		register_date,
@@ -32,14 +32,14 @@
 		SELECT 	<include refid="UserColumns" />
 		FROM 	tb_user
 		WHERE 	1=1 
-		AND 	id = #{id}
+		AND 	id = #{username}
 	</select>
 	
 	<select id="selectAuthorities" parameterType="String" resultType="org.springframework.security.core.authority.SimpleGrantedAuthority">
 		SELECT 	auth
 		FROM 	tb_auth
 		WHERE 	1=1
-		AND 	id = #{id}
+		AND 	id = #{username}
 	</select>
 	
 	<insert id="createAuthority" parameterType="org.springframework.security.core.authority.SimpleGrantedAuthority">
@@ -48,11 +48,11 @@
 					auth
 					)VALUES
 					<foreach item="authority" index="index" collection="authorities" separator=",">
-					 (#{id}, #{authority.role})
+					 (#{username}, #{authority.role})
 					</foreach>
 					ON DUPLICATE KEY
 					UPDATE
-					id = #{id}	
+					id = #{username}	
 	</insert>
 	
 
