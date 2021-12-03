@@ -19,15 +19,15 @@ import com.galleryboard.exception.AttachFileException;
 @Component
 public class FileUtil {
 	private final String today = LocalDate.now().format(DateTimeFormatter.ofPattern("yyMMdd"));
-	private final String uploadPath = Paths.get("C:","develop","upload",today).toString();
+	//private final String uploadPath = Paths.get("C:","develop","upload",today).toString();
 	private final String getRandomString(){
 		return UUID.randomUUID().toString().replaceAll("-", "");
 	}
 	
-	public List<Attach> uploadFiles(MultipartFile[] files,Long boardIdx){
+	public List<Attach> uploadFiles(MultipartFile[] files,Long boardIdx,String path){
 		
 		List<Attach> list = new ArrayList<>();
-		File dir = new File(uploadPath);
+		File dir = new File(path);
 		if(dir.exists() == false) {
 			dir.mkdirs();
 		}
@@ -40,7 +40,7 @@ public class FileUtil {
 				final String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 				final String saveName = getRandomString() + "." + extension;
 				
-				File target = new File(uploadPath, saveName);
+				File target = new File(path, saveName);
 				file.transferTo(target);
 				
 				Attach attach = new Attach();

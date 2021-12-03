@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
@@ -76,9 +77,11 @@ public class BoardController extends UiUtil {
 	}
 	
 	@PostMapping("/registerBoard")
-	public String registerBoard(Board board,MultipartFile[] files,Model model) {
+	public String registerBoard(Board board,MultipartFile[] files,Model model,HttpServletRequest req) {
+		// 프로젝트 내부경로에 이미지를 저장하기 위해 HttpServletRequest를 이용한다. 
+		String path = req.getSession().getServletContext().getRealPath("/")+"resources/";
 		try {
-			boolean isRegistered = boardService.registerBoard(board, files);
+			boolean isRegistered = boardService.registerBoard(board, files, path);
 			if(isRegistered==false) {
 				return showMessageWithRedirect("게시글 등록실패","/board/list",Method.GET,null,model);
 				// null 에는 paging param이 들어간다. 

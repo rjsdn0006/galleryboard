@@ -9,7 +9,7 @@ import com.galleryboard.domain.Board;
 
 public interface BoardService {
 	public boolean registerBoard(Board board);
-	public boolean registerBoard(Board board,MultipartFile[] files);
+	public boolean registerBoard(Board board,MultipartFile[] files,String path);
 	public Board getBoardDetail(Long idx);
 	public boolean deleteBoard(Long idx);
 	public List<Board> getBoardList(Board board);

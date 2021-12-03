@@ -33,7 +33,7 @@
 	<sec:authentication property="principal" var="user" />
 
 	<h1>글쓰기</h1>
-	<form action="/board/registerBoard" method="post" enctype="multipart/form-data">
+	<form action="/board/registerBoard" method="post" enctype="multipart/form-data" onsubmit="return registerBoard(this)">
 		<div class="hidden-box">
 			<input type="hidden" name="writer" value="${user.username}" />
 			<c:if test="${not empty board}"> <!-- 수정작업일 경우 보내줄요소 -->
@@ -86,6 +86,16 @@
 	
 	
 	<script>
+		function registerBoard(form){
+			
+			let titleImg = $('#file_0').prevAll('input.upload-name').val(); // 첫번째 이미지의 originalFileName을 가져옴 
+			if(titleImg!='파일찾기'){ // 등록된 이미지가 있을경우
+				$(form).append('<input type="hidden" name="titleImg" value="'+titleImg+'" />');
+			}else{ // 등록된 이미지가 없을경우 noImg로 정해준다. 
+				$(form).append('<input type="hidden" name="titleImg" value="noImg" />');
+			}
+		}
+	
 		const fileList = "${fileList}";
 		let fileIdx = (fileList==null) ? 0 : fileList.length; // 파일의 인덱스를 이미 존재하는 인덱스 다음번호를 매겨주기 위하여 
 		

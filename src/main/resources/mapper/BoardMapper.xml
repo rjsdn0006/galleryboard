@@ -12,7 +12,8 @@
 		delete_yn,
 		insert_time,
 		update_time,
-		delete_time
+		delete_time,
+		title_img
 	</sql>
 	
 	<insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="idx">
@@ -27,7 +28,8 @@
 					'N',
 					NOW(),
 					NULL,
-					NULL
+					NULL,
+					#{titleImg}
 					)
 	</insert>
 	
@@ -35,7 +37,8 @@
 		UPDATE 	tb_board 
 		SET 	title = #{title},
 				content = #{content},
-				update_time = NOW()
+				update_time = NOW(),
+				title_img = #{titleImg}
 		WHERE 	idx = #{idx}
 	</update>
 	
@@ -66,5 +69,11 @@
 		FROM 	tb_board
 		WHERE 	delete_yn = 'N'
 	</select>
+	
+	<update id="setTitleImg">
+		UPDATE 	tb_board
+		SET 	title_img = #{titleImg}
+		WHERE 	idx=#{idx}
+	</update>
 	
 </mapper>

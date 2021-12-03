@@ -46,21 +46,30 @@ public class BoardServiceImpl implements BoardService{
 	}
 	
 	@Override
-	public boolean registerBoard(Board board, MultipartFile[] files) {
+	public boolean registerBoard(Board board, MultipartFile[] files,String path) {
 		int queryResult = 0;
-		
+
 		if(registerBoard(board) == false) {
 			return false;
 		}
-		
-		List<Attach> list = fileUtil.uploadFiles(files, board.getIdx()); // 작동함 
-		if(CollectionUtils.isEmpty(list) == false) {
+
+		List<Attach> list = fileUtil.uploadFiles(files, board.getIdx(),path); 
+		if(CollectionUtils.isEmpty(list) == false) { // 리스트에 담긴게 있다면 ( 업로드된게 있다면 )  
 			queryResult= attachMapper.insertAttach(list);
 			if(queryResult<1) {
 				queryResult = 0;
 			}
 		}
-		return (queryResult>0);
+		
+		// 갤러리 게시판에 맞게 대표이미지를 설정하는 구간 
+		int count = attachMapper.selectAttachTotalCount(board.getIdx());
+		if(count>0) {
+			List<Attach> attachList = attachMapper.selectAttachList(board.getIdx());
+			String titleImg = attachList.get(0).getSaveName();
+			boardMapper.setTitleImg(titleImg,board.getIdx());
+		}
+	
+		return true;
 	}
 
 	@Override
