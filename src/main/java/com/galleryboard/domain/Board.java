@@ -20,4 +20,6 @@ public class Board extends Common{
 	
 	private String changeYn;
 	private List<Long> fileidxs;
+	
+	private String titleImg;
 }

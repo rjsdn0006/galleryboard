@@ -16,11 +16,12 @@
 		INSERT INTO tb_attach
 					(<include refid="AttachCol" />)
 					VALUES
-					<foreach collection="attach" item="item" separator=",">
+					<foreach collection="list" item="item" separator=",">
 					(
-						#{item.board_idx},
-						#{item.original_name},
-						#{item.savename},
+						#{item.idx},
+						#{item.boardIdx},
+						#{item.originalName},
+						#{item.saveName},
 						#{item.size},
 						'N',
 						NOW(),
@@ -46,15 +47,22 @@
 				</foreach>
 	</update>
 	
-	<select id="selectAttachDetail" parameterType="long">
+	<select id="selectAttachDetail" parameterType="long" resultType="Attach">
 		SELECT 	<include refid="AttachCol" />
 		FROM 	tb_attach
 		WHERE 	delete_yn='N'
 				AND idx = #{idx}
 	</select>
 	
-	<select id="selectAttachTotalCount" parameterType="long">
-		SELECT 	count(*)
+	<select id="selectAttachList" parameterType="long" resultType="Attach">
+		SELECT 	<include refid="AttachCol" /> 
+		FROM 	tb_attach
+		WHERE 	delete_yn='N'
+		AND 	board_idx = #{boardIdx}
+	</select>
+	
+	<select id="selectAttachTotalCount" parameterType="long" resultType="int">
+		SELECT 	IFNULL(count(*),0)
 		FROM 	tb_attach
 		WHERE 	delete_yn='N'
 				AND board_idx = #{boardIdx}

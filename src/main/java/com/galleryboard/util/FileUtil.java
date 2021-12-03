@@ -44,7 +44,7 @@ public class FileUtil {
 				file.transferTo(target);
 				
 				Attach attach = new Attach();
-				attach.setOrginalName(file.getOriginalFilename());
+				attach.setOriginalName(file.getOriginalFilename());
 				attach.setSaveName(saveName);
 				attach.setSize(file.getSize());
 				attach.setBoardIdx(boardIdx);

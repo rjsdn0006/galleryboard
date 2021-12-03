@@ -11,7 +11,7 @@
 <body>
 	
 	<c:if test="${not empty params}">
-		<form action="${redirectUri}" method="${method}" style="display:none;">
+		<form action="${redirectUri}" method="${method}" style="display:none;" name="sendForm">
 			<c:forEach items="${params}" var="param" varStatus="status">
 				<input type="hidden" name="${param.key}" value="${param.value}" />
 			</c:forEach>
@@ -27,7 +27,7 @@
 			if(message!=null){
 				alert(message);
 			}
-			if(params!=null){
+			if(params!=""){
 				document.sendForm.submit();
 			}else{
 				location.href = redirectUri;

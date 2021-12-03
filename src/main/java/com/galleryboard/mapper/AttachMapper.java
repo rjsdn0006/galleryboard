@@ -8,7 +8,7 @@ import com.galleryboard.domain.Attach;
 
 @Mapper
 public interface AttachMapper {
-	public int insertAttach(List<Attach> attach);
+	public int insertAttach(List<Attach> list);
 	public int deleteAttach(Long boardIdx);
 	public int undeleteAttach(List<Long> idxs); 
 	public Attach selectAttachDetail(Long idx);

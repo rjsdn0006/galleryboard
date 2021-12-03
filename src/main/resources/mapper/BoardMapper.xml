@@ -15,7 +15,7 @@
 		delete_time
 	</sql>
 	
-	<insert id="insertBoard" parameterType="Board">
+	<insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="idx">
 		INSERT INTO tb_board(
 					<include refid="BoardCol" />
 					)VALUES(
@@ -39,7 +39,7 @@
 		WHERE 	idx = #{idx}
 	</update>
 	
-	<select id="selectBoardDetail" parameterType="long">
+	<select id="selectBoardDetail" parameterType="long" resultType="Board">
 		SELECT 	<include refid="BoardCol" />
 		FROM 	tb_board
 		WHERE 	delete_yn = 'N'
@@ -53,7 +53,7 @@
 		WHERE 	idx = #{idx}
 	</update>
 	
-	<select id="selectBoardList" parameterType="Board">
+	<select id="selectBoardList" parameterType="Board" resultType="Board">
 		SELECT 		<include refid="BoardCol" />
 		FROM 		tb_board
 		WHERE 		delete_yn = 'N'

@@ -11,8 +11,11 @@
 	<h1>게시판</h1>
 	<ul>
 		<c:forEach items="${boardList}" var="item" varStatus="status">
-			<li>${item.title}</li>
+			<li><a href="/board/detail?idx=${item.idx}">${item.title}</a></li>
 		</c:forEach>
 	</ul>
+	<div class="btnDiv">
+		<a href="/board/write"><button>글쓰기</button></a>
+	</div>
 </body>
 </html>

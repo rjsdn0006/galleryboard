@@ -53,7 +53,7 @@ public class BoardServiceImpl implements BoardService{
 			return false;
 		}
 		
-		List<Attach> list = fileUtil.uploadFiles(files, board.getIdx());
+		List<Attach> list = fileUtil.uploadFiles(files, board.getIdx()); // 작동함 
 		if(CollectionUtils.isEmpty(list) == false) {
 			queryResult= attachMapper.insertAttach(list);
 			if(queryResult<1) {
@@ -100,7 +100,7 @@ public class BoardServiceImpl implements BoardService{
 		if(count>0) {
 			list = attachMapper.selectAttachList(boardIdx);
 		}
-		return list;
+		return list; // 여기서 빈 List가 반환되고있다.
 	}
 
 	@Override

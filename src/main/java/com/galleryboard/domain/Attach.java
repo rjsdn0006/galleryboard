@@ -8,7 +8,7 @@ import lombok.Setter;
 public class Attach extends Common{
 	private Long idx;
 	private Long boardIdx;
-	private String orginalName;
+	private String originalName;
 	private String saveName;
 	private long size;
 }
