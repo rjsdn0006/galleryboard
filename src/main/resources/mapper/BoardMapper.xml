@@ -62,6 +62,7 @@
 		WHERE 		delete_yn = 'N'
 		ORDER BY 	idx DESC, 
 					insert_time DESC
+		<include refid="CommonMapper.paging" />
 	</select>
 	
 	<select id="selectBoardTotalCount" parameterType="Board" resultType="int">

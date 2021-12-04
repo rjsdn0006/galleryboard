@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -78,21 +79,45 @@ public class BoardController extends UiUtil {
 	
 	@PostMapping("/registerBoard")
 	public String registerBoard(Board board,MultipartFile[] files,Model model,HttpServletRequest req) {
+		
+		Map<String,Object> pagingParams = board.getPagingParams(board);
+		
 		// 프로젝트 내부경로에 이미지를 저장하기 위해 HttpServletRequest를 이용한다. 
 		String path = req.getSession().getServletContext().getRealPath("/")+"resources/";
 		try {
 			boolean isRegistered = boardService.registerBoard(board, files, path);
 			if(isRegistered==false) {
-				return showMessageWithRedirect("게시글 등록실패","/board/list",Method.GET,null,model);
+				return showMessageWithRedirect("게시글 등록실패","/board/list",Method.GET,pagingParams,model);
 				// null 에는 paging param이 들어간다. 
 			}
 		}catch(DataAccessException e) {
-			return showMessageWithRedirect("DB영역의 문제발생","/board/list",Method.GET,null,model);
+			return showMessageWithRedirect("DB영역의 문제발생","/board/list",Method.GET,pagingParams,model);
 		}catch(Exception e) {
-			return showMessageWithRedirect("시스템영역의 문제발생","/board/list",Method.GET,null,model);
+			return showMessageWithRedirect("시스템영역의 문제발생","/board/list",Method.GET,pagingParams,model);
 		}
-		return showMessageWithRedirect("게시글이 등록되었습니다.","/board/list",Method.GET,null,model);
+		return showMessageWithRedirect("게시글이 등록되었습니다.","/board/list",Method.GET,pagingParams,model);
 		
+	}
+	
+	@PostMapping("/delete")
+	public String deleteBoard(Board board,@RequestParam(value="idx", required=false)Long idx,Model model) {
+		if(idx==null) {
+			return showMessageWithRedirect("올바르지 않은 접근입니다.", "/board/list", Method.GET, null, model);
+		}
+		Map<String,Object> pagingParams = board.getPagingParams(board);
+		try {
+			boolean isDeleted = boardService.deleteBoard(idx);
+			if(isDeleted==false) {
+				return showMessageWithRedirect("게시글 삭제에 실패하였습니다.", "/board/list", Method.GET, pagingParams, model);
+			}
+		}catch (DataAccessException e) {
+			return showMessageWithRedirect("데이터베이스 처리 과정에 문제가 발생하였습니다.", "/board/list", Method.GET, pagingParams, model);
+
+		} catch (Exception e) {
+			return showMessageWithRedirect("시스템에 문제가 발생하였습니다.", "/board/list", Method.GET, pagingParams, model);
+		}
+
+		return showMessageWithRedirect("게시글 삭제가 완료되었습니다.", "/board/list", Method.GET, pagingParams, model);
 	}
 	
 	@GetMapping("/download")

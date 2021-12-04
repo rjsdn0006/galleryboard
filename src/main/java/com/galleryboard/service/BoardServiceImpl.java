@@ -13,6 +13,7 @@ import com.galleryboard.domain.Attach;
 import com.galleryboard.domain.Board;
 import com.galleryboard.mapper.AttachMapper;
 import com.galleryboard.mapper.BoardMapper;
+import com.galleryboard.paging.PaginationInfo;
 import com.galleryboard.util.FileUtil;
 
 @Service
@@ -95,6 +96,11 @@ public class BoardServiceImpl implements BoardService{
 	public List<Board> getBoardList(Board board) {
 		List<Board> list = Collections.emptyList();
 		int count = boardMapper.selectBoardTotalCount(board);
+		
+		PaginationInfo paginationInfo = new PaginationInfo(board);
+		paginationInfo.setTotalRecordCount(count);
+		
+		board.setPaginationInfo(paginationInfo);
 		
 		if(count>0) {
 			list = boardMapper.selectBoardList(board);

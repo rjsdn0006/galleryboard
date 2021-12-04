@@ -88,6 +88,21 @@
 	<script>
 		function registerBoard(form){
 			
+			// 페이징 정보를 넘겨주는 구간 
+			let idx = "${board.idx}";
+			if (idx!=null) {
+				let queryString = "${board.makeQueryString(board.currentPageNo)}";
+		
+				// queryString을 Object로 변환 
+				queryString = new URLSearchParams(queryString);
+				queryString.forEach(function(value, key) {
+					if (value!=null) {
+						$(form).append('<input type="hidden" name="' + key + '" value="' + value + '" />');
+					}
+				});
+			}
+			
+			// 타이틀이미지를 결정해주는 구간 
 			let titleImg = $('#file_0').prevAll('input.upload-name').val(); // 첫번째 이미지의 originalFileName을 가져옴 
 			if(titleImg!='파일찾기'){ // 등록된 이미지가 있을경우
 				$(form).append('<input type="hidden" name="titleImg" value="'+titleImg+'" />');

@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <title>상세화면</title>
 </head>
 <body>
@@ -17,6 +18,33 @@
 			<a href="/board/download?idx=${file.idx}">${file.originalName}</a>
 		</c:forEach>
 	</c:if>
+	<div class="btn-box">
+		<a href="/board/list${board.makeQueryString(board.currentPageNo)}">뒤로가기</a>
+		<a href="/board/write${board.makeQueryString(board.currentPageNo)&idx=${board.idx}">수정하기</a>
+		<button type="button" onclick="deleteBoard(${board.idx}, ${board.makeQueryString(board.currentPageNo)})">삭제하기</button>
+	</div>
+	
+	<script>
+		function(idx, queryString){
+			if(confirm(idx+"번 게시물을 삭제하겠습니까?")){
+				let uri = "/board/delete";
+				let html = "";
+				
+				html += '<form name="dataForm" action="'+uri+'" method="post">';
+				html += '<input type="hidden" name="idx" value="'+idx+'" />';
+				
+				queryString = new URLSearchParams(queryString);
+				queryString.forEach(function(value, key) {
+					if (value!=null) {
+						html += '<input type="hidden" name="' + key + '" value="' + value + '" />';
+					}
+				});
+				
+				htmp += '</form>';'
+				
+			}
+		}
+	</script>
 	
 </body>
 </html>
