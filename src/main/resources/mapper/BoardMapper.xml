@@ -60,6 +60,7 @@
 		SELECT 		<include refid="BoardCol" />
 		FROM 		tb_board
 		WHERE 		delete_yn = 'N'
+		<include refid="CommonMapper.search" />
 		ORDER BY 	idx DESC, 
 					insert_time DESC
 		<include refid="CommonMapper.paging" />
@@ -69,6 +70,7 @@
 		SELECT 	IFNULL(count(*),0)
 		FROM 	tb_board
 		WHERE 	delete_yn = 'N'
+		<include refid="CommonMapper.search" />
 	</select>
 	
 	<update id="setTitleImg">

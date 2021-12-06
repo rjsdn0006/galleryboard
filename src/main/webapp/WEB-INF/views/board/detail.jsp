@@ -20,8 +20,15 @@
 	</c:if>
 	<div class="btn-box">
 		<a href="/board/list${board.makeQueryString(board.currentPageNo)}">뒤로가기</a>
-		<a href="/board/write${board.makeQueryString(board.currentPageNo)&idx=${board.idx}">수정하기</a>
+		<a href="/board/write${board.makeQueryString(board.currentPageNo)}&idx=${board.idx}">수정하기</a>
 		<button type="button" onclick="deleteBoard(${board.idx}, ${board.makeQueryString(board.currentPageNo)})">삭제하기</button>
+	</div>
+	
+	<div class="comment-box">
+		<input type="text" name="comment-content" />
+		<button type="button">댓글작성</button>
+	</div>
+	<div class="comment-list">
 	</div>
 	
 	<script>
@@ -43,6 +50,29 @@
 				htmp += '</form>';'
 				
 			}
+		}
+		$(function(){
+			loadCommentList();	
+		});
+		
+		function loadCommentList(){
+			let uri = "/comment/"+"${board.idx}";
+			$.ajax({
+				url:uri,
+				type:"GET"
+			}).done(function(result){
+				if(result){
+					let commentHtml = "";
+					$(result).each(function(index, comment){ 
+						commentHtml += "<li>";
+						commentHtml += ("<span class='c-writer'>"+comment.writer+"</span>");
+						commentHtml += ("<span class='c-content'>"+comment.content+"</span>");
+						commentHtml += "</li>";
+					});
+					
+					$('.comment-list').html(commentHtml);
+				}
+			});
 		}
 	</script>
 	

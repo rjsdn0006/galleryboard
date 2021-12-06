@@ -7,4 +7,31 @@
 		LIMIT #{paginationInfo.firstRecordIndex}, #{recordsPerPage}
 	</sql>
 	
+	<sql id="search">
+		<if test="searchKeyword != null and searchKeyword != ''">
+			<choose>
+				<when test="searchType != null and searchType != ''">
+					<choose>
+						<when test="'title'.equals(searchType)">
+							AND title LIKE CONCAT('%',#{searchKeyword},'%')
+						</when>
+						<when test="'content'.equals(searchType)">
+							AND content LIKE CONCAT('%',#{searchKeyword},'%')
+						</when>
+						<when test="'writer'.equals(searchType)">
+							AND writer LIKE CONCAT('%',#{searchKeyword},'%')
+						</when>
+					</choose>
+				</when>
+				<otherwise>
+					AND(
+						 title LIKE CONCAT('%',#{searchKeyword},'%') OR
+						 content LIKE CONCAT('%',#{searchKeyword},'%') OR
+						 writer LIKE CONCAT('%',#{searchKeyword},'%')
+					)
+				</otherwise>
+			</choose>
+		</if>
+	</sql>
+	
 </mapper>

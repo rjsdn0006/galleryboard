@@ -39,6 +39,7 @@ public class Criteria {
 	}
 	
 	public Map<String, Object> getPagingParams(Criteria criteria){
+		// showMessageWithDirect를 위하여 구현하는 메서드 
 		Map<String,Object> params = new LinkedHashMap<>();
 		params.put("currentPageNo", criteria.getCurrentPageNo());
 		params.put("recordsPerPage", criteria.getRecordsPerPage());
