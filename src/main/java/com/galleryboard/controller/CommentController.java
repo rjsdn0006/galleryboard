@@ -66,21 +66,20 @@ public class CommentController {
 		return message;
 	}
 	
-	/*
+	
 	@PostMapping("/reply")
-	public JsonObject replyComment(Comment comment) {
-		// 답댓글 작성완료를 누르면 form에서 전달해줘야하는것
-		// boardIdx , content , writer , ref, step, level, replyYn='Y' 
+	public String replyComment(Comment comment) {
+		// idx, content, boardIdx, writer, replyYn이 들어와있는 상태. - serviceImpl 수정필요하다.
+		// 부모의 idx가 들어와있다. 
+		boolean isReply = commentService.registerComment(comment);
 		
-		JsonObject jsonObject = new JsonObject();
-		try {
-			boolean isRegistered = commentService.registerComment(comment);
-			jsonObject.addProperty("result", isRegistered);
-		}catch(DataAccessException e) {
-			jsonObject.addProperty("message", "DB처리 과정에 문제가 발생하였습니다.");
-		}catch(Exception e) {
-			jsonObject.addProperty("message", "시스템에 문제가 발생하였습니다.");
+		String message = "";
+		if(isReply) {
+			message = "등록에 성공하였습니다.";
+		}else {
+			message = "등록에 실패하였습니다.";
 		}
-		return jsonObject;
-	} */
+		
+		return message;
+	} 
 }

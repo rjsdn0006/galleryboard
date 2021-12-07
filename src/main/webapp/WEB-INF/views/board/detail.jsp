@@ -155,7 +155,47 @@
 		}
 		function replyComment(param){
 			// 답글작성시 replyYn = 'Y' 해주는걸 잊으면 아니됨. 
+			let replyBtn = $(param);
+			let idx = replyBtn.prevAll('input[name=commentIdx]').val();
+			let replyForm = "";
+			replyForm += "<div class='replyForm'>";
+			replyForm += "<textarea></textarea>";
+			replyForm += "<p><button type='button' onclick='replyCommentProcess("+idx+",this)'>답글작성완료</button>";
+			replyForm += "<button type='button' onclick='hideReplyForm(this)'>취소</button></p>";
+			replyForm += "</div>";
 			
+			replyBtn.next().next().after(replyForm);
+			replyBtn.toggle();
+			
+		}
+		
+		function replyCommentProcess(idx,param){
+			// 인자로 받아온 idx가 부모의 idx이다. 
+			let replyBtn = $(param);
+			let content = replyBtn.parent().prev().val();
+			if(content==null || content==""){
+				alert("내용을 작성해주세요");
+				return false;
+			}
+			let uri = "/comment/reply";
+			let boardIdx = "${board.idx}";
+			let writer = "${principal.username}";
+			let replyYn = "Y";
+			$.ajax({
+				url : uri,
+				type:"POST",
+				data:{idx:idx, content:content, boardIdx:boardIdx, writer:writer, replyYn:replyYn}
+			}).done(function(message){
+				alert(message);
+				loadCommentList();	
+			})
+		}
+		
+		function hideReplyForm(param){
+			let hideBtn = $(param); 
+			let replyForm = hideBtn.parent().parent();
+			replyForm.prev().prev().prev().toggle();
+			replyForm.hide();
 		}
 		
 		function deleteComment(param){
