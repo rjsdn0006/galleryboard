@@ -35,8 +35,8 @@
 							#{level},
 						</otherwise>
 					</choose>
-					#{deleteYn},
-					#{insertTime},
+					IFNULL(#{deleteYn},'N'), 
+					NOW(),
 					#{updateTime},
 					#{deleteTime}
 					)
@@ -51,14 +51,14 @@
 	
 	<update id="deleteComment" parameterType="long">
 		UPDATE 	tb_comment
-		SET 	deleteYn = 'Y'
+		SET 	delete_yn = 'Y'
 		WHERE 	idx = #{idx}
 	</update>
 	
-	<select id="selectCommentDetail" parameterType="long">
+	<select id="selectCommentDetail" parameterType="long" resultType="Comment">
 		SELECT 	<include refid="CommentCol" />
 		FROM 	tb_comment
-		WHERE 	deleteYn = 'N' 
+		WHERE 	delete_yn = 'N' 
 		AND 	idx = #{idx}
 	</select>
 	

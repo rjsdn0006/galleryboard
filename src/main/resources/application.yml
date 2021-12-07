@@ -20,3 +20,4 @@ server:  port: 8080
 mybatis:  type-aliases-package: com.galleryboard.domain
   mapper-locations: mapper/**/*.xml
   configuration:    map-underscore-to-camel-case: true
+logging:  config: classpath:logback-spring.xml

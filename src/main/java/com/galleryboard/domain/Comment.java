@@ -13,5 +13,5 @@ public class Comment extends Common{
 	private int ref;
 	private int step;
 	private int level;
-	private String replyYn;
+	private String replyYn = "N";
 }

@@ -2,15 +2,27 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <title>상세화면</title>
+<style>
+	li {
+		list-style: none;
+	}
+	.btn-box{
+		margin-bottom : 20px;
+	}
+	.comment-box{
+		margin-bottom : 20px;
+	}
+</style>
 </head>
 <body>
-
+	<sec:authentication property="principal" var="principal" />
 	<h1>${board.title}</h1>
 	<p>${board.content}</p>
 	<c:if test="${not empty fileList}"> <!-- 파일을 다운로드 받을 수 있는 영역 -->
@@ -23,16 +35,17 @@
 		<a href="/board/write${board.makeQueryString(board.currentPageNo)}&idx=${board.idx}">수정하기</a>
 		<button type="button" onclick="deleteBoard(${board.idx}, ${board.makeQueryString(board.currentPageNo)})">삭제하기</button>
 	</div>
+	<hr />
 	
 	<div class="comment-box">
-		<input type="text" name="comment-content" />
-		<button type="button">댓글작성</button>
+		<input type="text" name="comment-content" id="comment-content"/>
+		<button type="button" onclick="registerComment()">댓글작성</button>
 	</div>
 	<div class="comment-list">
 	</div>
 	
 	<script>
-		function(idx, queryString){
+		function deleteBoard(idx, queryString){
 			if(confirm(idx+"번 게시물을 삭제하겠습니까?")){
 				let uri = "/board/delete";
 				let html = "";
@@ -47,7 +60,7 @@
 					}
 				});
 				
-				htmp += '</form>';'
+				htmp += '</form>';
 				
 			}
 		}
@@ -65,14 +78,100 @@
 					let commentHtml = "";
 					$(result).each(function(index, comment){ 
 						commentHtml += "<li>";
-						commentHtml += ("<span class='c-writer'>"+comment.writer+"</span>");
-						commentHtml += ("<span class='c-content'>"+comment.content+"</span>");
+						commentHtml += ("<span class='c-writer' style='margin-right:10px; font-weight:bold;'>"+comment.writer+"</span>");
+						commentHtml += ("<p class='c-content'>"+comment.content+"</p>");
+						commentHtml += ("<p>");						
+						commentHtml += ("<input type='hidden' name='commentIdx' value='"+comment.idx+"'/>");
+						commentHtml += ("<button type='button' onclick='replyComment(this)'>답글</button>");
+						commentHtml += ("<button type='button' onclick='deleteComment(this)'>삭제</button>");
+						commentHtml += ("<button type='button' onclick='updateComment(this)'>수정</button>");
+						commentHtml += ("</p>");
 						commentHtml += "</li>";
 					});
 					
 					$('.comment-list').html(commentHtml);
 				}
 			});
+		}
+		
+		function registerComment(){
+			let writer = "${principal.username}";
+			let boardIdx = "${board.idx}";
+			let content = $("#comment-content").val();
+			
+			if(content==null || content==""){ // 내용이 비어있다면 입력하라는 경고창출력 
+				alert("내용을 입력하세요");
+				return false;
+			}
+
+			$.ajax({
+				url:"/comment/",
+				type:"POST",
+				data:{boardIdx:boardIdx, content:content, writer:writer}
+			}).done(function(message){
+				alert(message);
+				loadCommentList();	
+			});
+		}
+		
+		function updateComment(param){
+			let updateBtn = $(param);
+			let idx = updateBtn.prevAll('input[name=commentIdx]').val();
+			let updateForm = "";
+			updateForm += "<div class='updateForm'>";
+			updateForm += "<textarea></textarea>";
+			updateForm += "<p><button type='button' onclick='updateCommentProcess("+idx+",this)'>수정하기</button>";
+			updateForm += "<button type='button' onclick='hideUpdateForm(this)'>취소</button></p>";
+			updateForm += "</div>";
+			
+			updateBtn.after(updateForm);
+			updateBtn.toggle();
+		}
+		
+		function updateCommentProcess(idx,param){
+			let updateBtn = $(param);
+			let content = updateBtn.parent().prev().val();
+			if(content==null || content==""){
+				alert("내용을 작성해주세요");
+				return false;
+			}
+			let uri = "/comment/"+idx;
+			$.ajax({
+				url : uri,
+				type:"PATCH",
+				data:{idx:idx, content:content}
+			}).done(function(message){
+				alert(message);
+				loadCommentList();	
+			})
+		}
+		
+		function hideUpdateForm(param){
+			let hideBtn = $(param); 
+			let updateForm = hideBtn.parent().parent();
+			updateForm.prev().toggle();
+			updateForm.hide();
+			
+		}
+		function replyComment(param){
+			// 답글작성시 replyYn = 'Y' 해주는걸 잊으면 아니됨. 
+			
+		}
+		
+		function deleteComment(param){
+			let deleteBtn = $(param);
+			let idx = deleteBtn.prevAll('input[name=commentIdx]').val();
+			if(confirm("덧글을 삭제하시겠습니까?")){
+				$.ajax({
+				url: "/comment/delete",
+				data: {idx:idx},
+				type:"POST"
+				}).done(function(message){
+					alert(message);
+					loadCommentList();
+				});
+			}
+			
 		}
 	</script>
 	

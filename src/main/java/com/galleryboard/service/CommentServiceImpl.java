@@ -19,15 +19,19 @@ public class CommentServiceImpl implements CommentService {
 	public boolean registerComment(Comment comment) {
 		int queryResult = 0;
 		
-		// 새글을 등록할때 ref값을 1증가시켜준다. 
-		if(comment.getReplyYn().equals('N')) {
-			int maxRef = commentMapper.findMaxRef(comment.getBoardIdx());
-			comment.setRef(maxRef+1);
-		}else { // 답글을 등록할때 다른 글들의 level값들을 조정해준다.
-			commentMapper.adjustCommentLevel(comment);
+		if(comment.getIdx()==null) {
+			// 새글을 등록할때 ref값을 1증가시켜준다. 
+			if(comment.getReplyYn().equals("N")) {
+				int maxRef = commentMapper.findMaxRef(comment.getBoardIdx());
+				comment.setRef(maxRef+1);
+			}else { // 답글을 등록할때 다른 글들의 level값들을 조정해준다.
+				commentMapper.adjustCommentLevel(comment);
+			}
+			
+			queryResult = commentMapper.insertComment(comment);
+		}else {
+			queryResult = commentMapper.updateComment(comment);
 		}
-	
-		queryResult = commentMapper.insertComment(comment);
 			
 		return queryResult==1?true:false;
 	}
